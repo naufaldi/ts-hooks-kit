@@ -1,0 +1,20 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "ts-hooks-kit",
+  "tsconfig": "packages/core/tsconfig.json",
+  "entryPoints": ["packages/core/src/**/*.ts"],
+  "entryPointStrategy": "resolve",
+  "json": "./generated/typedoc/all.json",
+  "out": "./generated/typedoc",
+  "readme": "none",
+  "exclude": [
+    "packages/core/src/**/*.demo.tsx",
+    "packages/core/src/**/*.test.ts",
+    "packages/core/src/**/index.ts"
+  ],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "excludeNotDocumented": false,
+  "skipErrorChecking": true
+}

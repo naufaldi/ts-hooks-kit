@@ -1,0 +1,58 @@
+name: Build and test
+
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+
+env:
+  NODE_VERSION: 20.19.0
+  PNPM_VERSION: 9
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        react_version: ['18.3.1', '19.2.0']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Override React runtime for matrix
+        run: |
+          cd packages/core
+          npm install --no-save react@${{ matrix.react_version }} react-dom@${{ matrix.react_version }}
+
+      - name: Build
+        run: pnpm build
+
+      - name: Build docs
+        run: pnpm build:docs
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Test docs
+        run: pnpm --filter @ts-hooks-kit/docs test

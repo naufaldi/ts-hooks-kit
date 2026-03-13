@@ -1,0 +1,1 @@
+export { usePermission } from './usePermission'

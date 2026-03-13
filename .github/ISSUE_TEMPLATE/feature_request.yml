@@ -1,0 +1,29 @@
+name: Feature Request
+description: Suggest a new hook or feature
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please describe what you'd like.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of the feature or new hook you'd like.
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: Describe the problem this would solve or the use case it enables.
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: Proposed API
+      description: If you have ideas about the API, share them here (optional).
+    validations:
+      required: false
