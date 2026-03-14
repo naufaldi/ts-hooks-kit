@@ -40,7 +40,7 @@ export type NetworkState = {
  */
 export function useNetwork(): NetworkState {
   const [state, setState] = useState<NetworkState>({
-    online: navigator.onLine,
+    online: typeof navigator !== 'undefined' ? navigator.onLine : true,
     effectiveType: undefined,
     downlink: undefined,
     downlinkMax: undefined,

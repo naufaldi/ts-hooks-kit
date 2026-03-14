@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 /** The hook internal state. */
-export type State = {
+export type UseIntersectionObserverState = {
   /** A boolean indicating if the element is intersecting. */
   isIntersecting: boolean
   /** The intersection observer entry. */
@@ -89,7 +89,7 @@ export function useIntersectionObserver({
 }: UseIntersectionObserverOptions = {}): IntersectionReturn {
   const [ref, setRef] = useState<Element | null>(null)
 
-  const [state, setState] = useState<State>(() => ({
+  const [state, setState] = useState<UseIntersectionObserverState>(() => ({
     isIntersecting: initialIsIntersecting,
     entry: undefined,
   }))

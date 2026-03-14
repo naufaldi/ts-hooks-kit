@@ -53,7 +53,7 @@ Use these commands to develop and test your changes:
 
 ## Pull Request Process
 
-1. **Create a feature branch** from `main`:
+1. **Create a feature branch** from `master`:
    ```bash
    git checkout -b feature/your-hook-name
    ```

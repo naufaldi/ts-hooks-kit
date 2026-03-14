@@ -42,7 +42,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ],
   "sideEffects": false,
   "scripts": {
@@ -51,7 +52,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "tsc --noEmit",
-    "clean": "rimraf dist coverage .turbo *.tsbuildinfo"
+    "clean": "rimraf dist coverage .turbo *.tsbuildinfo",
+    "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
     "react": "^18 || ^19"
