@@ -31,13 +31,18 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Override React runtime for matrix
+      - name: Override React version for matrix
         run: |
-          cd packages/core
-          npm install --no-save --ignore-scripts react@${{ matrix.react_version }} react-dom@${{ matrix.react_version }}
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('packages/core/package.json', 'utf8'));
+            pkg.devDependencies['react'] = '${{ matrix.react_version }}';
+            pkg.devDependencies['react-dom'] = '${{ matrix.react_version }}';
+            fs.writeFileSync('packages/core/package.json', JSON.stringify(pkg, null, 2));
+          "
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build
         run: pnpm build
