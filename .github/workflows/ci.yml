@@ -37,7 +37,7 @@ jobs:
       - name: Override React runtime for matrix
         run: |
           cd packages/core
-          npm install --no-save react@${{ matrix.react_version }} react-dom@${{ matrix.react_version }}
+          npm install --no-save --ignore-scripts react@${{ matrix.react_version }} react-dom@${{ matrix.react_version }}
 
       - name: Build
         run: pnpm build
