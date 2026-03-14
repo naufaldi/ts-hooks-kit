@@ -1,3 +1,4 @@
+import React from 'react'
 import { fireEvent, render, renderHook, screen } from '@testing-library/react'
 import type { Mock } from 'vitest'
 

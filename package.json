@@ -22,6 +22,9 @@
     "test": "pnpm --filter @ts-hooks-kit/core test",
     "test:codemod": "pnpm --filter @ts-hooks-kit/codemod test",
     "lint": "pnpm -r lint",
+    "lint:eslint": "eslint packages/core/src/",
+    "format": "prettier --write \"packages/core/src/**/*.ts\" \"packages/core/src/**/*.tsx\"",
+    "format:check": "prettier --check \"packages/core/src/**/*.ts\" \"packages/core/src/**/*.tsx\"",
     "dev:docs": "pnpm --filter @ts-hooks-kit/docs dev",
     "build:docs": "pnpm generate:docs && pnpm --filter @ts-hooks-kit/docs build",
     "generate:docs": "node scripts/generate-docs.mjs",
@@ -29,6 +32,13 @@
     "migrate:test": "node packages/codemod/bin/ts-hooks-kit-codemod.js examples/sample-app --pattern \"**/*.{ts,tsx,cjs}\" --dry"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
+    "@typescript-eslint/parser": "^8.57.0",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "6.0.0-rc.2",
+    "prettier": "^3.8.1",
     "typedoc": "^0.28.14"
   }
 }

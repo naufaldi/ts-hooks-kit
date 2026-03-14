@@ -8,7 +8,6 @@ on:
 
 env:
   NODE_VERSION: 20.19.0
-  PNPM_VERSION: 9
 
 jobs:
   verify:
@@ -24,8 +23,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,13 +31,18 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
 
+      - name: Override React version for matrix
+        run: |
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('packages/core/package.json', 'utf8'));
+            pkg.devDependencies['react'] = '${{ matrix.react_version }}';
+            pkg.devDependencies['react-dom'] = '${{ matrix.react_version }}';
+            fs.writeFileSync('packages/core/package.json', JSON.stringify(pkg, null, 2));
+          "
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
-
-      - name: Override React runtime for matrix
-        run: |
-          cd packages/core
-          npm install --no-save react@${{ matrix.react_version }} react-dom@${{ matrix.react_version }}
 
       - name: Build
         run: pnpm build

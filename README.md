@@ -1,6 +1,6 @@
 # ts-hooks-kit
 
-A actively maintained React hooks library based on usehooks-ts, upgraded for React 18/19 compatibility.
+An actively maintained React hooks library based on usehooks-ts, upgraded for React 18/19 compatibility.
 
 [![npm version](https://img.shields.io/npm/v/@ts-hooks-kit/core)](https://www.npmjs.com/package/@ts-hooks-kit/core)
 [![license](https://img.shields.io/npm/l/@ts-hooks-kit/core)](https://github.com/naufaldi/ts-hooks-kit/blob/main/LICENSE)

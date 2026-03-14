@@ -109,7 +109,7 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
 }
 
 /** @private */
-export type BoxSizesKey = keyof Pick<
+type BoxSizesKey = keyof Pick<
   ResizeObserverEntry,
   'borderBoxSize' | 'contentBoxSize' | 'devicePixelContentBoxSize'
 >
