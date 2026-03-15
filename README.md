@@ -14,7 +14,7 @@
 
 <p align="center">
   Production-ready React hooks for React 18 &amp; 19, fully typed and tree-shakeable.<br />
-  <a href="https://github.com/naufaldi/ts-hooks-kit"><strong>github.com/naufaldi/ts-hooks-kit</strong></a>
+  <a href="https://ts-hooks-kit.netlify.app"><strong>Documentation</strong></a> · <a href="https://github.com/naufaldi/ts-hooks-kit"><strong>GitHub</strong></a>
 </p>
 
 ---
@@ -86,6 +86,7 @@ export function Example() {
 
 ## 📚 Documentation
 
+- [**Full documentation**](https://ts-hooks-kit.netlify.app) — live docs site with API reference
 - [**Migration guide**](./docs/migration.md) to move from usehooks-ts to ts-hooks-kit
 - [**Compatibility**](./docs/compatibility.md) for React version support details
 - [**Contributing**](./CONTRIBUTING.md) to get involved in development
