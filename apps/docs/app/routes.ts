@@ -7,5 +7,7 @@ export default [
     route('guide/migration', 'routes/guide.migration.tsx'),
     route('react-hook', 'routes/hooks._index.tsx'),
     route('react-hook/:slug', 'routes/hooks.$slug.tsx'),
+    route('examples', 'routes/examples._index.tsx'),
+    route('examples/:slug', 'routes/examples.$slug.tsx'),
   ]),
 ] satisfies RouteConfig
