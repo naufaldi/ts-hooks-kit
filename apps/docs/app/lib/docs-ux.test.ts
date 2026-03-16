@@ -15,13 +15,14 @@ describe('docs-ux', () => {
       { to: '/guide/getting-started', label: 'Getting Started' },
       { to: '/guide/migration', label: 'Migration' },
       { to: '/react-hook', label: 'Hooks' },
+      { to: '/examples', label: 'Examples' },
     ])
   })
 
   it('builds sidebar sections with static guides and dynamic hooks', () => {
     const sections = buildDocsSidebarSections(hooks)
 
-    expect(sections).toHaveLength(2)
+    expect(sections).toHaveLength(3)
     expect(sections[0]).toEqual({
       title: 'Guides',
       items: [
@@ -29,8 +30,9 @@ describe('docs-ux', () => {
         { to: '/guide/migration', label: 'Migration' },
       ],
     })
-    expect(sections[1]?.title).toBe('Hooks')
-    expect(sections[1]?.items[0]).toEqual({
+    expect(sections[1]?.title).toBe('Examples')
+    expect(sections[2]?.title).toBe('Hooks')
+    expect(sections[2]?.items[0]).toEqual({
       to: '/react-hook/use-boolean',
       label: 'useBoolean',
     })

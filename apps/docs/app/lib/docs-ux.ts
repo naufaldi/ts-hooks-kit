@@ -1,3 +1,5 @@
+import { EXAMPLES } from './examples'
+
 import type { HookDocMeta } from './types'
 
 export type DocsNavItem = {
@@ -15,6 +17,7 @@ export function getDocsNavigation(): DocsNavItem[] {
     { to: '/guide/getting-started', label: 'Getting Started' },
     { to: '/guide/migration', label: 'Migration' },
     { to: '/react-hook', label: 'Hooks' },
+    { to: '/examples', label: 'Examples' },
   ]
 }
 
@@ -26,6 +29,10 @@ export function buildDocsSidebarSections(hooks: HookDocMeta[]): DocsSidebarSecti
         { to: '/guide/getting-started', label: 'Getting Started' },
         { to: '/guide/migration', label: 'Migration' },
       ],
+    },
+    {
+      title: 'Examples',
+      items: EXAMPLES.map(e => ({ to: `/examples/${e.slug}`, label: e.title })),
     },
     {
       title: 'Hooks',
