@@ -1,6 +1,7 @@
 [build]
-  command = "pnpm build:docs"
+  command = "corepack enable && pnpm install --frozen-lockfile && pnpm build:docs"
   publish = "apps/docs/build/client"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
+  COREPACK_ENABLE_AUTO_PIN = "0"
