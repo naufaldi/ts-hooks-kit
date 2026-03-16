@@ -1,5 +1,5 @@
 [build]
-  command = "corepack enable && pnpm install --frozen-lockfile && pnpm build:docs"
+  command = "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @ts-hooks-kit/core build && pnpm build:docs"
   publish = "apps/docs/build/client"
 
 [build.environment]
