@@ -1,6 +1,7 @@
 [build]
-  command = "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @ts-hooks-kit/core build && pnpm build:docs"
-  publish = "apps/docs/build/client"
+  base = "apps/docs"
+  command = "cd ../.. && corepack enable && pnpm install --frozen-lockfile && pnpm --filter @ts-hooks-kit/core build && pnpm build:docs"
+  publish = "build/client"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
