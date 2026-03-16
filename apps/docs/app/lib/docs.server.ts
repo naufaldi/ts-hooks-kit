@@ -1,15 +1,22 @@
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
-
 import type { HookDocMeta } from './types'
 
-const repoRoot = resolve(process.cwd(), '../..')
-const generatedRoot = resolve(repoRoot, 'generated/docs')
+// Import generated data at build time so it's bundled into the server
+// instead of reading from the filesystem at runtime (which fails on Netlify)
+import hooksJson from '../../../../generated/docs/hooks.json'
+
+const hookMarkdowns = import.meta.glob<string>(
+  '../../../../generated/docs/hooks/*.md',
+  { query: '?raw', import: 'default', eager: true },
+)
+
+const guideMarkdowns = import.meta.glob<string>('../content/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
 
 export function getAllHooks(): HookDocMeta[] {
-  const hooksPath = resolve(generatedRoot, 'hooks.json')
-  const raw = readFileSync(hooksPath, 'utf8')
-  return JSON.parse(raw) as HookDocMeta[]
+  return hooksJson as HookDocMeta[]
 }
 
 export function getHookBySlug(slug: string): HookDocMeta | null {
@@ -18,11 +25,17 @@ export function getHookBySlug(slug: string): HookDocMeta | null {
 }
 
 export function getHookMarkdown(slug: string): string {
-  const markdownPath = resolve(generatedRoot, 'hooks', `${slug}.md`)
-  return readFileSync(markdownPath, 'utf8')
+  const key = `../../../../generated/docs/hooks/${slug}.md`
+  const content = hookMarkdowns[key]
+  if (!content) throw new Error(`Hook markdown not found: ${slug}`)
+  return content
 }
 
-export function getGuideMarkdown(name: 'getting-started' | 'migration'): string {
-  const contentPath = resolve(process.cwd(), 'app/content', `${name}.md`)
-  return readFileSync(contentPath, 'utf8')
+export function getGuideMarkdown(
+  name: 'getting-started' | 'migration',
+): string {
+  const key = `../content/${name}.md`
+  const content = guideMarkdowns[key]
+  if (!content) throw new Error(`Guide markdown not found: ${name}`)
+  return content
 }
