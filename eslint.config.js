@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import tsParser from '@typescript-eslint/parser'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
 import reactHooks from 'eslint-plugin-react-hooks'
+import importPlugin from 'eslint-plugin-import-x'
 
 export default [
   {
@@ -68,6 +69,7 @@ export default [
     plugins: {
       '@typescript-eslint': tsPlugin,
       'react-hooks': reactHooks,
+      'import-x': importPlugin,
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
@@ -80,6 +82,19 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/consistent-type-imports': 'error',
+
+      // Import hygiene (Vercel best practice: bundle-barrel-imports)
+      'import-x/order': [
+        'error',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
+      ],
+      'import-x/no-duplicates': 'error',
+      'import-x/no-cycle': 'warn',
+
       // Downgrade new react-hooks rules to warn for gradual adoption
       'react-hooks/refs': 'warn',
       'react-hooks/purity': 'warn',

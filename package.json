@@ -29,7 +29,14 @@
     "build:docs": "pnpm generate:docs && pnpm --filter @ts-hooks-kit/docs build",
     "generate:docs": "node scripts/generate-docs.mjs",
     "codemod": "node packages/codemod/bin/ts-hooks-kit-codemod.js",
-    "migrate:test": "node packages/codemod/bin/ts-hooks-kit-codemod.js examples/sample-app --pattern \"**/*.{ts,tsx,cjs}\" --dry"
+    "migrate:test": "node packages/codemod/bin/ts-hooks-kit-codemod.js examples/sample-app --pattern \"**/*.{ts,tsx,cjs}\" --dry",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "packages/core/src/**/*.{ts,tsx}": [
+      "prettier --write --config .prettierrc",
+      "eslint --fix"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -37,7 +44,10 @@
     "@typescript-eslint/parser": "^8.57.0",
     "eslint": "^10.0.3",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.16.2",
     "eslint-plugin-react-hooks": "6.0.0-rc.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
     "typedoc": "^0.28.14"
   }

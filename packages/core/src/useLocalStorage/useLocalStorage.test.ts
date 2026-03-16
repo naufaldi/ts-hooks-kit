@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 
 import { mockStorage } from '../../tests/mocks'
+
 import { useLocalStorage } from './useLocalStorage'
 
 mockStorage('localStorage')
