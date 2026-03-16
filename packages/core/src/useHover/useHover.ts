@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 import type { RefObject } from 'react'
 
 import { useEventListener } from '../useEventListener'

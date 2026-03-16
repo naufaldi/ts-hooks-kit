@@ -26,7 +26,7 @@ export default function Component() {
         <select
           name="select-ternaryDarkMode"
           onChange={ev => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+             
             setTernaryDarkMode(ev.target.value as TernaryDarkMode)
           }}
           value={ternaryDarkMode}

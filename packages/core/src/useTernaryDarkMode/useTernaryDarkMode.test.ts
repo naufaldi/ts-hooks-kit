@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 
 import { mockMatchMedia, mockStorage } from '../../tests/mocks'
+
 import { useTernaryDarkMode } from './useTernaryDarkMode'
 
 mockStorage('localStorage')
