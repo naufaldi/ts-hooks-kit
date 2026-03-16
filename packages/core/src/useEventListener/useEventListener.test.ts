@@ -1,4 +1,3 @@
- 
 import { fireEvent, renderHook } from '@testing-library/react'
 
 import { useEventListener } from './useEventListener'
@@ -26,17 +25,11 @@ const windowRemoveEventListenerSpy = vitest.spyOn(window, 'removeEventListener')
 
 const ref = { current: document.createElement('div') }
 const refAddEventListenerSpy = vitest.spyOn(ref.current, 'addEventListener')
-const refRemoveEventListenerSpy = vitest.spyOn(
-  ref.current,
-  'removeEventListener',
-)
+const refRemoveEventListenerSpy = vitest.spyOn(ref.current, 'removeEventListener')
 
 const docRef = { current: window.document }
 const docAddEventListenerSpy = vitest.spyOn(docRef.current, 'addEventListener')
-const docRemoveEventListenerSpy = vitest.spyOn(
-  docRef.current,
-  'removeEventListener',
-)
+const docRemoveEventListenerSpy = vitest.spyOn(docRef.current, 'removeEventListener')
 
 describe('useEventListener()', () => {
   afterEach(() => {
@@ -52,11 +45,7 @@ describe('useEventListener()', () => {
       useEventListener(eventName, handler)
     })
 
-    expect(windowAddEventListenerSpy).toHaveBeenCalledWith(
-      eventName,
-      expect.any(Function),
-      options,
-    )
+    expect(windowAddEventListenerSpy).toHaveBeenCalledWith(eventName, expect.any(Function), options)
 
     unmount()
 
@@ -77,19 +66,11 @@ describe('useEventListener()', () => {
     })
 
     expect(refAddEventListenerSpy).toHaveBeenCalledTimes(1)
-    expect(refAddEventListenerSpy).toHaveBeenCalledWith(
-      eventName,
-      expect.any(Function),
-      options,
-    )
+    expect(refAddEventListenerSpy).toHaveBeenCalledWith(eventName, expect.any(Function), options)
 
     unmount()
 
-    expect(refRemoveEventListenerSpy).toHaveBeenCalledWith(
-      eventName,
-      expect.any(Function),
-      options,
-    )
+    expect(refRemoveEventListenerSpy).toHaveBeenCalledWith(eventName, expect.any(Function), options)
   })
 
   it('should bind/unbind the event listener to the document when document is provided', () => {
@@ -102,19 +83,11 @@ describe('useEventListener()', () => {
     })
 
     expect(docAddEventListenerSpy).toHaveBeenCalledTimes(1)
-    expect(docAddEventListenerSpy).toHaveBeenCalledWith(
-      eventName,
-      expect.any(Function),
-      options,
-    )
+    expect(docAddEventListenerSpy).toHaveBeenCalledWith(eventName, expect.any(Function), options)
 
     unmount()
 
-    expect(docRemoveEventListenerSpy).toHaveBeenCalledWith(
-      eventName,
-      expect.any(Function),
-      options,
-    )
+    expect(docRemoveEventListenerSpy).toHaveBeenCalledWith(eventName, expect.any(Function), options)
   })
 
   it('should pass the options to the event listener', () => {
@@ -130,11 +103,7 @@ describe('useEventListener()', () => {
       useEventListener(eventName, handler, undefined, options)
     })
 
-    expect(windowAddEventListenerSpy).toHaveBeenCalledWith(
-      eventName,
-      expect.any(Function),
-      options,
-    )
+    expect(windowAddEventListenerSpy).toHaveBeenCalledWith(eventName, expect.any(Function), options)
   })
 
   it('should call the event listener handler when the event is triggered', () => {

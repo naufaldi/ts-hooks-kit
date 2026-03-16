@@ -3,12 +3,8 @@ import { useTernaryDarkMode } from './useTernaryDarkMode'
 type TernaryDarkMode = ReturnType<typeof useTernaryDarkMode>['ternaryDarkMode']
 
 export default function Component() {
-  const {
-    isDarkMode,
-    ternaryDarkMode,
-    setTernaryDarkMode,
-    toggleTernaryDarkMode,
-  } = useTernaryDarkMode()
+  const { isDarkMode, ternaryDarkMode, setTernaryDarkMode, toggleTernaryDarkMode } =
+    useTernaryDarkMode()
 
   return (
     <div>
@@ -16,9 +12,7 @@ export default function Component() {
       <p>ternaryMode: {ternaryDarkMode}</p>
       <p>
         Toggle between three modes
-        <button onClick={toggleTernaryDarkMode}>
-          Toggle from {ternaryDarkMode}
-        </button>
+        <button onClick={toggleTernaryDarkMode}>Toggle from {ternaryDarkMode}</button>
       </p>
       <p>
         Select a mode
@@ -26,7 +20,6 @@ export default function Component() {
         <select
           name="select-ternaryDarkMode"
           onChange={ev => {
-             
             setTernaryDarkMode(ev.target.value as TernaryDarkMode)
           }}
           value={ternaryDarkMode}

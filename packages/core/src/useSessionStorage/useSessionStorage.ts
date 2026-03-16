@@ -5,7 +5,6 @@ import { useEventCallback } from '../useEventCallback'
 import { useEventListener } from '../useEventListener'
 
 declare global {
-   
   interface WindowEventMap {
     'session-storage': CustomEvent
   }
@@ -72,8 +71,7 @@ export function useSessionStorage<T>(
         return undefined as unknown as T
       }
 
-      const defaultValue =
-        initialValue instanceof Function ? initialValue() : initialValue
+      const defaultValue = initialValue instanceof Function ? initialValue() : initialValue
 
       let parsed: unknown
       try {
@@ -91,8 +89,7 @@ export function useSessionStorage<T>(
   // Get from session storage then
   // parse stored json or return initialValue
   const readValue = useCallback((): T => {
-    const initialValueToUse =
-      initialValue instanceof Function ? initialValue() : initialValue
+    const initialValueToUse = initialValue instanceof Function ? initialValue() : initialValue
 
     // Prevent build error "window is undefined" but keep working
     if (IS_SERVER) {
@@ -151,8 +148,7 @@ export function useSessionStorage<T>(
       )
     }
 
-    const defaultValue =
-      initialValue instanceof Function ? initialValue() : initialValue
+    const defaultValue = initialValue instanceof Function ? initialValue() : initialValue
 
     // Remove the key from session storage
     window.sessionStorage.removeItem(key)

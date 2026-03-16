@@ -106,6 +106,32 @@ Use these commands to develop and test your changes:
 
 6. **Submit a pull request** on GitHub with a clear description of your changes
 
+## Adding a Changeset
+
+When your pull request changes the public API, fixes a bug, or adds a feature to `@ts-hooks-kit/core`, include a changeset:
+
+1. **Run the changeset command**:
+   ```bash
+   pnpm changeset
+   ```
+
+2. **Select the package**: Choose `@ts-hooks-kit/core`.
+
+3. **Choose the bump type**:
+   - **patch**: Bug fixes, documentation improvements
+   - **minor**: New hooks, new features
+   - **major**: Breaking changes to existing hook APIs
+
+4. **Write a summary**: Describe the change from a user's perspective. This text appears in the CHANGELOG.
+
+This creates a markdown file in `.changeset/` — commit it with your PR.
+
+**When is a changeset NOT needed?**
+- Changes to tests only
+- Changes to docs site (`apps/docs/`)
+- Changes to the codemod package
+- CI/tooling changes
+
 ## Code Style
 
 - **TypeScript-first**: All code must use strict TypeScript types. Avoid `any` unless absolutely necessary.

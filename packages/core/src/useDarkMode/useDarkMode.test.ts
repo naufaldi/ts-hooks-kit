@@ -97,9 +97,7 @@ describe('useDarkMode()', () => {
 
   it('should accept a custom localStorage key', () => {
     mockMatchMedia(false)
-    const { result } = renderHook(() =>
-      useDarkMode({ localStorageKey: 'custom-key' }),
-    )
+    const { result } = renderHook(() => useDarkMode({ localStorageKey: 'custom-key' }))
 
     expect(result.current.isDarkMode).toBe(false)
 

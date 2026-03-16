@@ -34,9 +34,7 @@ describe('useLocalStorage()', () => {
   })
 
   it('Initial state is a Map', () => {
-    const { result } = renderHook(() =>
-      useLocalStorage('map', new Map([['a', 1]])),
-    )
+    const { result } = renderHook(() => useLocalStorage('map', new Map([['a', 1]])))
 
     expect(result.current[0]).toEqual(new Map([['a', 1]]))
   })
@@ -48,9 +46,7 @@ describe('useLocalStorage()', () => {
   })
 
   it('Initial state is a Date', () => {
-    const { result } = renderHook(() =>
-      useLocalStorage('date', new Date(2020, 1, 1)),
-    )
+    const { result } = renderHook(() => useLocalStorage('date', new Date(2020, 1, 1)))
 
     expect(result.current[0]).toEqual(new Date(2020, 1, 1))
   })
@@ -100,9 +96,7 @@ describe('useLocalStorage()', () => {
   })
 
   it('Update the state with undefined', () => {
-    const { result } = renderHook(() =>
-      useLocalStorage<string | undefined>('key', 'value'),
-    )
+    const { result } = renderHook(() => useLocalStorage<string | undefined>('key', 'value'))
 
     act(() => {
       const setState = result.current[1]
@@ -113,9 +107,7 @@ describe('useLocalStorage()', () => {
   })
 
   it('Update the state with null', () => {
-    const { result } = renderHook(() =>
-      useLocalStorage<string | null>('key', 'value'),
-    )
+    const { result } = renderHook(() => useLocalStorage<string | null>('key', 'value'))
 
     act(() => {
       const setState = result.current[1]
@@ -155,9 +147,7 @@ describe('useLocalStorage()', () => {
     const initialValues: [string, unknown] = ['key', 'initial']
     const { result: A } = renderHook(() => useLocalStorage(...initialValues))
     const { result: B } = renderHook(() => useLocalStorage(...initialValues))
-    const { result: C } = renderHook(() =>
-      useLocalStorage('other-key', 'initial'),
-    )
+    const { result: C } = renderHook(() => useLocalStorage('other-key', 'initial'))
 
     act(() => {
       const setState = A.current[1]
@@ -236,8 +226,7 @@ describe('useLocalStorage()', () => {
 
   it('should handle undefined values with custom deserializer', () => {
     const serializer = (value: number | undefined) => String(value)
-    const deserializer = (value: string) =>
-      value === 'undefined' ? undefined : Number(value)
+    const deserializer = (value: string) => (value === 'undefined' ? undefined : Number(value))
 
     const { result } = renderHook(() =>
       useLocalStorage<number | undefined>('key', 0, {
