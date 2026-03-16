@@ -20,6 +20,7 @@
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm --filter @ts-hooks-kit/core test",
+    "test:coverage": "pnpm --filter @ts-hooks-kit/core test:coverage",
     "test:codemod": "pnpm --filter @ts-hooks-kit/codemod test",
     "lint": "pnpm -r lint",
     "lint:eslint": "eslint packages/core/src/",
