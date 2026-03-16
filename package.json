@@ -29,9 +29,14 @@
     "build:docs": "pnpm generate:docs && pnpm --filter @ts-hooks-kit/docs build",
     "generate:docs": "node scripts/generate-docs.mjs",
     "codemod": "node packages/codemod/bin/ts-hooks-kit-codemod.js",
-    "migrate:test": "node packages/codemod/bin/ts-hooks-kit-codemod.js examples/sample-app --pattern \"**/*.{ts,tsx,cjs}\" --dry"
+    "migrate:test": "node packages/codemod/bin/ts-hooks-kit-codemod.js examples/sample-app --pattern \"**/*.{ts,tsx,cjs}\" --dry",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build && changeset publish --provenance"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.30.0",
     "@eslint/js": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^8.57.0",
     "@typescript-eslint/parser": "^8.57.0",
