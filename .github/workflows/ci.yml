@@ -54,7 +54,12 @@ jobs:
         run: pnpm lint
 
       - name: Test
+        if: matrix.react_version == '18.3.1'
         run: pnpm test
+
+      - name: Test with coverage
+        if: matrix.react_version == '19.2.0'
+        run: pnpm test:coverage
 
       - name: Test docs
         run: pnpm --filter @ts-hooks-kit/docs test
