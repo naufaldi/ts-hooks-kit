@@ -1,4 +1,6 @@
-# Getting Started
+## Introduction
+
+`@ts-hooks-kit/core` is a TypeScript-first React hooks library with strong API parity to `usehooks-ts`, plus additional production-focused hooks. The goal is a familiar developer experience with modern React 18/19 support.
 
 ## Requirements
 
@@ -8,17 +10,16 @@
 
 ## Install
 
+Use your preferred package manager:
+
 ```bash
-npm install @ts-hooks-kit/core
-
-# or
-yarn add @ts-hooks-kit/core
-
-# or
 pnpm add @ts-hooks-kit/core
+npm install @ts-hooks-kit/core
+yarn add @ts-hooks-kit/core
+bun add @ts-hooks-kit/core
 ```
 
-## Basic usage
+## Basic Usage
 
 ```tsx
 import { useBoolean, useLocalStorage } from '@ts-hooks-kit/core'
@@ -34,8 +35,6 @@ export function Example() {
   )
 }
 ```
-
-Only the hooks you import are included in your bundle — every hook is independently tree-shakeable.
 
 ## Compatibility
 

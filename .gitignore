@@ -3,4 +3,5 @@ dist
 coverage
 generated
 apps/docs/build
+.react-router
 .netlify
