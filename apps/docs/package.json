@@ -12,12 +12,17 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@shikijs/rehype": "^4.0.2",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "^4.2.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
     "react-router": "^7.9.1",
     "react-router-dom": "^7.9.1",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "shiki": "^4.0.2",
+    "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
     "@netlify/vite-plugin-react-router": "^3.0.0",
