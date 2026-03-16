@@ -28,6 +28,25 @@ pnpm --version
    pnpm install
    ```
 
+   This automatically sets up Git hooks via Husky.
+
+## Pre-Commit Hooks
+
+Every commit runs [lint-staged](https://github.com/lint-staged/lint-staged) on staged `.ts`/`.tsx` files:
+
+1. **Prettier** formats code using `.prettierrc` (no semi, single quotes, 100 width)
+2. **ESLint** auto-fixes lintable issues using `eslint.config.js`
+
+If the commit is blocked, fix the reported issues and try again.
+
+### ESLint Rules
+
+Our ESLint config enforces:
+
+- TypeScript strict rules (`consistent-type-imports`, `no-unused-vars`)
+- React Hooks rules (`rules-of-hooks`, `exhaustive-deps`)
+- Import hygiene (`import-x/order`, `no-duplicates`, `no-cycle`)
+
 ## Development
 
 Each hook is organized in its own directory under `packages/core/src/`. The standard structure for a hook is:
@@ -46,10 +65,14 @@ When adding a new hook or modifying existing ones, follow this structure and ens
 
 Use these commands to develop and test your changes:
 
-- **Run tests**: `pnpm test`
-- **Type check**: `pnpm lint` (runs `tsc --noEmit`)
-- **Build packages**: `pnpm build`
-- **Run tests for core package**: `pnpm --filter @ts-hooks-kit/core test`
+| Command | Description |
+|---------|-------------|
+| `pnpm test` | Run all tests |
+| `pnpm lint` | Type-check all packages |
+| `pnpm lint:eslint` | Run ESLint on core package |
+| `pnpm format` | Format all source files |
+| `pnpm format:check` | Check formatting without writing |
+| `pnpm build` | Build all packages |
 
 ## Pull Request Process
 

@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 
 import { mockStorage } from '../../tests/mocks'
+
 import { useSessionStorage } from './useSessionStorage'
 
 mockStorage('sessionStorage')
@@ -33,25 +34,19 @@ describe('useSessionStorage()', () => {
   })
 
   it('Initial state is a Map', () => {
-    const { result } = renderHook(() =>
-      useSessionStorage('map', new Map([['a', 1]])),
-    )
+    const { result } = renderHook(() => useSessionStorage('map', new Map([['a', 1]])))
 
     expect(result.current[0]).toEqual(new Map([['a', 1]]))
   })
 
   it('Initial state is a Set', () => {
-    const { result } = renderHook(() =>
-      useSessionStorage('set', new Set([1, 2])),
-    )
+    const { result } = renderHook(() => useSessionStorage('set', new Set([1, 2])))
 
     expect(result.current[0]).toEqual(new Set([1, 2]))
   })
 
   it('Initial state is a Date', () => {
-    const { result } = renderHook(() =>
-      useSessionStorage('date', new Date(2020, 1, 1)),
-    )
+    const { result } = renderHook(() => useSessionStorage('date', new Date(2020, 1, 1)))
 
     expect(result.current[0]).toEqual(new Date(2020, 1, 1))
   })
@@ -101,9 +96,7 @@ describe('useSessionStorage()', () => {
   })
 
   it('Update the state with undefined', () => {
-    const { result } = renderHook(() =>
-      useSessionStorage<string | undefined>('keytest', 'value'),
-    )
+    const { result } = renderHook(() => useSessionStorage<string | undefined>('keytest', 'value'))
 
     act(() => {
       const setState = result.current[1]
@@ -143,9 +136,7 @@ describe('useSessionStorage()', () => {
     const initialValues: [string, unknown] = ['key', 'initial']
     const { result: A } = renderHook(() => useSessionStorage(...initialValues))
     const { result: B } = renderHook(() => useSessionStorage(...initialValues))
-    const { result: C } = renderHook(() =>
-      useSessionStorage('other-key', 'initial'),
-    )
+    const { result: C } = renderHook(() => useSessionStorage('other-key', 'initial'))
 
     act(() => {
       const setState = A.current[1]
@@ -198,9 +189,7 @@ describe('useSessionStorage()', () => {
   })
 
   it('should use default JSON.stringify and JSON.parse when serializer/deserializer not provided', () => {
-    const { result } = renderHook(() =>
-      useSessionStorage('key', 'initialValue'),
-    )
+    const { result } = renderHook(() => useSessionStorage('key', 'initialValue'))
 
     act(() => {
       result.current[1]('newValue')
@@ -226,8 +215,7 @@ describe('useSessionStorage()', () => {
 
   it('should handle undefined values with custom deserializer', () => {
     const serializer = (value: number | undefined) => String(value)
-    const deserializer = (value: string) =>
-      value === 'undefined' ? undefined : Number(value)
+    const deserializer = (value: string) => (value === 'undefined' ? undefined : Number(value))
 
     const { result } = renderHook(() =>
       useSessionStorage<number | undefined>('key', 0, {

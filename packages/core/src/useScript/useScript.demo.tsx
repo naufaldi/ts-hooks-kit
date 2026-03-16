@@ -16,7 +16,7 @@ export default function Component() {
   useEffect(() => {
     if (typeof jQuery !== 'undefined') {
       // jQuery is loaded => print the version
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       alert(jQuery.fn.jquery)
     }
   }, [status])

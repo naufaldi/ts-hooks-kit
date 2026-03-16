@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 
 import { useDebounceCallback } from '../useDebounceCallback'
+
 import { useResizeObserver } from './useResizeObserver'
 
 type Size = {

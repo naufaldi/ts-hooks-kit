@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react'
-
 import type { Dispatch, SetStateAction } from 'react'
 
 /** Represents the second element of the output of the `useStep` hook. */

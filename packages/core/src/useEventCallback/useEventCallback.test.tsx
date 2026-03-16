@@ -1,5 +1,5 @@
-import React from 'react'
 import { fireEvent, render, renderHook, screen } from '@testing-library/react'
+import React from 'react'
 import type { Mock } from 'vitest'
 
 import { useEventCallback } from './useEventCallback'
@@ -33,9 +33,7 @@ describe('useEventCallback()', () => {
       (event: React.MouseEvent<HTMLButtonElement>) => void
     >()
 
-    const fn2 = undefined as
-      | Mock<[React.MouseEvent<HTMLButtonElement>], void>
-      | undefined
+    const fn2 = undefined as Mock<[React.MouseEvent<HTMLButtonElement>], void> | undefined
     const fn2Result = renderHook(() => useEventCallback(fn2))
 
     expectTypeOf(fn2Result.result.current).toEqualTypeOf<

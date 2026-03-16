@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react'
-
 import type { Dispatch, SetStateAction } from 'react'
 
 /** The hook return type. */

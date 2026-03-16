@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 import type { ChangeEvent } from 'react'
 
 import { useInterval } from './useInterval'
@@ -37,12 +36,7 @@ export default function Component() {
       </button>
       <p>
         <label htmlFor="delay">Delay: </label>
-        <input
-          type="number"
-          name="delay"
-          onChange={handleChange}
-          value={delay}
-        />
+        <input type="number" name="delay" onChange={handleChange} value={delay} />
       </p>
     </>
   )

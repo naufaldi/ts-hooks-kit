@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-
 import type { RefObject } from 'react'
 
 import { useIsMounted } from '../useIsMounted'
@@ -80,8 +79,7 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
       const newHeight = extractSize(entry, boxProp, 'blockSize')
 
       const hasChanged =
-        previousSize.current.width !== newWidth ||
-        previousSize.current.height !== newHeight
+        previousSize.current.width !== newWidth || previousSize.current.height !== newHeight
 
       if (hasChanged) {
         const newSize: Size = { width: newWidth, height: newHeight }

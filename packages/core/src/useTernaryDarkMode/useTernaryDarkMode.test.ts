@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 
 import { mockMatchMedia, mockStorage } from '../../tests/mocks'
+
 import { useTernaryDarkMode } from './useTernaryDarkMode'
 
 mockStorage('localStorage')
@@ -69,9 +70,7 @@ describe('useTernaryDarkMode()', () => {
   })
 
   it('should accept a custom localStorage key', () => {
-    const { result } = renderHook(() =>
-      useTernaryDarkMode({ localStorageKey: 'custom-key' }),
-    )
+    const { result } = renderHook(() => useTernaryDarkMode({ localStorageKey: 'custom-key' }))
 
     expect(result.current.isDarkMode).toBe(false)
     expect(result.current.ternaryDarkMode).toBe('system')
@@ -82,9 +81,7 @@ describe('useTernaryDarkMode()', () => {
 
     expect(result.current.isDarkMode).toBe(true)
     expect(result.current.ternaryDarkMode).toBe('dark')
-    expect(window.localStorage.getItem('custom-key')).toBe(
-      JSON.stringify('dark'),
-    )
+    expect(window.localStorage.getItem('custom-key')).toBe(JSON.stringify('dark'))
 
     act(() => {
       result.current.toggleTernaryDarkMode()
@@ -92,24 +89,18 @@ describe('useTernaryDarkMode()', () => {
 
     expect(result.current.isDarkMode).toBe(false)
     expect(result.current.ternaryDarkMode).toBe('light')
-    expect(window.localStorage.getItem('custom-key')).toBe(
-      JSON.stringify('light'),
-    )
+    expect(window.localStorage.getItem('custom-key')).toBe(JSON.stringify('light'))
   })
 
   it('should accept a custom default value (dark)', () => {
-    const { result } = renderHook(() =>
-      useTernaryDarkMode({ defaultValue: 'dark' }),
-    )
+    const { result } = renderHook(() => useTernaryDarkMode({ defaultValue: 'dark' }))
 
     expect(result.current.isDarkMode).toBe(true)
     expect(result.current.ternaryDarkMode).toBe('dark')
   })
 
   it('should accept a custom default value (light)', () => {
-    const { result } = renderHook(() =>
-      useTernaryDarkMode({ defaultValue: 'light' }),
-    )
+    const { result } = renderHook(() => useTernaryDarkMode({ defaultValue: 'light' }))
 
     expect(result.current.isDarkMode).toBe(false)
     expect(result.current.ternaryDarkMode).toBe('light')

@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 
 import { mockMatchMedia, mockStorage } from '../../tests/mocks'
+
 import { useDarkMode } from './useDarkMode'
 
 mockStorage('localStorage')
@@ -96,9 +97,7 @@ describe('useDarkMode()', () => {
 
   it('should accept a custom localStorage key', () => {
     mockMatchMedia(false)
-    const { result } = renderHook(() =>
-      useDarkMode({ localStorageKey: 'custom-key' }),
-    )
+    const { result } = renderHook(() => useDarkMode({ localStorageKey: 'custom-key' }))
 
     expect(result.current.isDarkMode).toBe(false)
 
