@@ -2,6 +2,12 @@
 
 `@ts-hooks-kit/core` is a TypeScript-first React hooks library with strong API parity to `usehooks-ts`, plus additional production-focused hooks. The goal is a familiar developer experience with modern React 18/19 support.
 
+## Requirements
+
+- React 18 or 19
+- TypeScript 5+ (recommended, not required)
+- Node.js 20+
+
 ## Install
 
 Use your preferred package manager:
@@ -30,9 +36,9 @@ export function Example() {
 }
 ```
 
-## What You Get
+## Compatibility
 
-- Familiar hook naming and usage patterns from `usehooks-ts`
-- React `^18 || ^19` compatibility
-- Strict TypeScript typings designed for app teams
-- Tree-shakeable package outputs for lean bundles
+- React `^18 || ^19`
+- TypeScript-first APIs
+- ESM + CJS outputs
+- Tree-shakeable — import only what you need

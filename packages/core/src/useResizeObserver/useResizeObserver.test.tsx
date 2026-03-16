@@ -1,70 +1,89 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ResizeObserver } from '@juggle/resize-observer'
-import { renderHook } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 
 import { useResizeObserver } from './useResizeObserver'
 
+// Capture observer callbacks
+let observerCallback: ResizeObserverCallback
+
+class MockResizeObserver {
+  callback: ResizeObserverCallback
+  observe = vi.fn()
+  disconnect = vi.fn()
+  unobserve = vi.fn()
+
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback
+    observerCallback = callback
+  }
+}
+
+function triggerResize(width: number, height: number) {
+  const entry = {
+    contentBoxSize: [{ inlineSize: width, blockSize: height }],
+    borderBoxSize: [{ inlineSize: width, blockSize: height }],
+    devicePixelContentBoxSize: [{ inlineSize: width, blockSize: height }],
+    contentRect: { width, height } as DOMRectReadOnly,
+    target: document.createElement('div'),
+  } as unknown as ResizeObserverEntry
+
+  act(() => {
+    observerCallback([entry], {} as ResizeObserver)
+  })
+}
+
 describe('useResizeObserver()', () => {
   beforeEach(() => {
-    // Mock the ResizeObserver
-    window.ResizeObserver = ResizeObserver
+    window.ResizeObserver = MockResizeObserver as any
   })
 
   afterEach(() => {
-    vitest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   it('should return initial undefined sizes', () => {
     const ref = { current: document.createElement('div') }
     const { result } = renderHook(() =>
-      useResizeObserver({
-        ref,
-      }),
+      useResizeObserver({ ref }),
     )
 
     expect(result.current.width).toBeUndefined()
     expect(result.current.height).toBeUndefined()
   })
 
-  it.skip('should return the observed element sizes', () => {
+  it('should return the observed element sizes', () => {
     const ref = { current: document.createElement('div') }
     const { result } = renderHook(() =>
-      useResizeObserver({
-        ref,
-      }),
+      useResizeObserver({ ref }),
     )
 
-    // TODO: Mock the observed element's size
+    triggerResize(100, 100)
 
     expect(result.current.width).toBe(100)
     expect(result.current.height).toBe(100)
   })
 
-  it.skip('should update size when element is resized', () => {
+  it('should update size when element is resized', () => {
     const ref = { current: document.createElement('div') }
     const { result } = renderHook(() =>
-      useResizeObserver({
-        ref,
-      }),
+      useResizeObserver({ ref }),
     )
 
-    // TODO: Mock the observed element's size
+    triggerResize(100, 100)
+    expect(result.current.width).toBe(100)
 
+    triggerResize(300, 200)
     expect(result.current.width).toBe(300)
     expect(result.current.height).toBe(200)
   })
 
-  it.skip('should use onResize callback to update the size', () => {
+  it('should use onResize callback', () => {
     const ref = { current: document.createElement('div') }
-    const onResize = vitest.fn()
+    const onResize = vi.fn()
     renderHook(() =>
-      useResizeObserver({
-        ref,
-        onResize,
-      }),
+      useResizeObserver({ ref, onResize }),
     )
 
-    // TODO: Mock the observed element's size
+    triggerResize(200, 200)
 
     expect(onResize).toHaveBeenCalledWith({ width: 200, height: 200 })
   })
