@@ -1,0 +1,22 @@
+{
+  "name": "@ts-hooks-kit/migration-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@ts-hooks-kit/core": "workspace:*",
+    "@ts-hooks-kit/codemod": "workspace:*",
+    "usehooks-ts": "3.1.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "vitest": "^4.0.7",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.9.3",
+    "@types/react": "^19.1.11",
+    "@types/react-dom": "^19.1.7"
+  }
+}

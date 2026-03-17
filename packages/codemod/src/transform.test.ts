@@ -40,4 +40,85 @@ describe('transformSource', () => {
     expect(result.rewrites).toBe(0)
     expect(result.code).toBe(input)
   })
+
+  it('rewrites aliased named imports', () => {
+    const input = "import { useBoolean as useFlag } from 'usehooks-ts'\n"
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(true)
+    expect(result.rewrites).toBe(1)
+    expect(result.code).toContain("from '@ts-hooks-kit/core'")
+    expect(result.code).toContain('useBoolean as useFlag')
+  })
+
+  it('rewrites named re-exports', () => {
+    const input = "export { useBoolean } from 'usehooks-ts'\n"
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(true)
+    expect(result.rewrites).toBe(1)
+    expect(result.code).toContain("from '@ts-hooks-kit/core'")
+  })
+
+  it('rewrites barrel re-exports', () => {
+    const input = "export * from 'usehooks-ts'\n"
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(true)
+    expect(result.rewrites).toBe(1)
+    expect(result.code).toContain("from '@ts-hooks-kit/core'")
+  })
+
+  it('rewrites multiple usehooks-ts imports in one file', () => {
+    const input = [
+      "import { useBoolean } from 'usehooks-ts'",
+      "import { useCounter } from 'usehooks-ts'",
+      '',
+    ].join('\n')
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(true)
+    expect(result.rewrites).toBe(2)
+    expect(result.code).not.toContain("from 'usehooks-ts'")
+  })
+
+  it('only rewrites usehooks-ts in mixed imports', () => {
+    const input = [
+      "import { useState } from 'react'",
+      "import { useBoolean } from 'usehooks-ts'",
+      "import { debounce } from 'lodash'",
+      '',
+    ].join('\n')
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(true)
+    expect(result.rewrites).toBe(1)
+    expect(result.code).toContain("from 'react'")
+    expect(result.code).toContain("from 'lodash'")
+    expect(result.code).not.toContain("from 'usehooks-ts'")
+  })
+
+  it('does not rewrite dynamic imports (known limitation)', () => {
+    const input = "const hooks = await import('usehooks-ts')\n"
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(false)
+    expect(result.rewrites).toBe(0)
+  })
+
+  it('does not change files with no imports', () => {
+    const input = 'const x = 42\nconsole.log(x)\n'
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(false)
+    expect(result.rewrites).toBe(0)
+    expect(result.code).toBe(input)
+  })
 })
