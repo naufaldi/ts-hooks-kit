@@ -22,6 +22,7 @@
     "test": "pnpm --filter @ts-hooks-kit/core test",
     "test:coverage": "pnpm --filter @ts-hooks-kit/core test:coverage",
     "test:codemod": "pnpm --filter @ts-hooks-kit/codemod test",
+    "test:migration": "pnpm --filter @ts-hooks-kit/migration-tests test",
     "lint": "pnpm -r lint",
     "lint:eslint": "eslint packages/core/src/",
     "format": "prettier --write \"packages/core/src/**/*.ts\" \"packages/core/src/**/*.tsx\"",

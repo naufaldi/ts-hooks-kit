@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/transform.ts"
+  },
   "bin": {
     "ts-hooks-kit-codemod": "./bin/ts-hooks-kit-codemod.js"
   },
