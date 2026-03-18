@@ -96,8 +96,11 @@ export function Markdown({ source }: { source: string }) {
               <table className="w-full text-sm" {...props}>{children}</table>
             </div>
           ),
+          thead: ({ children, ...props }) => (
+            <thead className="bg-muted" {...props}>{children}</thead>
+          ),
           th: ({ children, ...props }) => (
-            <th className="border border-border bg-muted px-3 py-2 text-left font-semibold" {...props}>
+            <th className="border border-border px-3 py-2 text-left font-semibold" scope="col" {...props}>
               {children}
             </th>
           ),

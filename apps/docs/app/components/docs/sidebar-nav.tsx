@@ -30,7 +30,11 @@ export function SidebarNav({ sections }: Props) {
                   }`
                 }
               >
-                {item.label}
+                {({ isActive }) => (
+                  <span aria-current={isActive ? 'page' : undefined}>
+                    {item.label}
+                  </span>
+                )}
               </NavLink>
             ))}
           </div>
