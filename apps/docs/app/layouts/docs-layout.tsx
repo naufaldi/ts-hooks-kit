@@ -39,7 +39,7 @@ export default function DocsLayout() {
           </div>
         </div>
       </header>
-      <div className="mx-auto grid max-w-[1220px] gap-6 px-5 md:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_200px]">
+      <div id="main-content" className="mx-auto grid max-w-[1220px] gap-6 px-5 md:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_200px]">
         <SidebarNav sections={sidebarSections} />
         <div className="min-w-0 py-8">
           <Outlet />
