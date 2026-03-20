@@ -15,6 +15,8 @@ export interface DebouncedFunction<T extends (...args: any[]) => any> {
   cancel: () => void
   /** Immediately invoke pending invocations. */
   flush: () => ReturnType<T> | undefined
+  /** Whether a trailing / maxWait invocation is still scheduled. */
+  isPending: () => boolean
 }
 
 /**
@@ -62,11 +64,7 @@ export function debounce<T extends (...args: any[]) => any>(
 
   const shouldInvoke = (time: number): boolean => {
     const timeSinceLastCall = time - (lastCallTime ?? 0)
-    return (
-      lastCallTime === null ||
-      timeSinceLastCall >= delay ||
-      timeSinceLastCall < 0
-    )
+    return lastCallTime === null || timeSinceLastCall >= delay || timeSinceLastCall < 0
   }
 
   const trailingEdge = (): ReturnType<T> | undefined => {
@@ -153,6 +151,10 @@ export function debounce<T extends (...args: any[]) => any>(
       }
     }
     return lastResult
+  }
+
+  debounced.isPending = (): boolean => {
+    return timeoutId !== null || maxTimeoutId !== null
   }
 
   return debounced as DebouncedFunction<T>

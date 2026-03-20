@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 
 import { useUnmount } from '../useUnmount'
 import { debounce } from '../utils'
@@ -58,40 +58,43 @@ export function useDebounceCallback<T extends (...args: any) => ReturnType<T>>(
   delay = 500,
   options?: DebounceOptions,
 ): DebouncedState<T> {
-  const debouncedFunc = useRef<DebouncedFunction<T> | null>(null)
+  const funcRef = useRef(func)
+  funcRef.current = func
 
-  useUnmount(() => {
-    if (debouncedFunc.current) {
-      debouncedFunc.current.cancel()
-    }
-  })
+  const leading = options?.leading ?? false
+  const trailing = options?.trailing !== false
+  const maxWait = options?.maxWait
+
+  const activeDebounced = useRef<DebouncedFunction<T> | null>(null)
 
   const debounced = useMemo(() => {
-    const debouncedFuncInstance = debounce(func, delay, options)
+    activeDebounced.current?.cancel()
 
-    const wrappedFunc: DebouncedState<T> = (...args: Parameters<T>) => {
-      return debouncedFuncInstance(...args)
-    }
+    const d = debounce((...args: Parameters<T>) => funcRef.current(...args), delay, {
+      leading,
+      trailing,
+      maxWait,
+    })
+    activeDebounced.current = d
+
+    const wrappedFunc: DebouncedState<T> = (...args: Parameters<T>) => d(...args)
 
     wrappedFunc.cancel = () => {
-      debouncedFuncInstance.cancel()
+      d.cancel()
     }
 
-    wrappedFunc.isPending = () => {
-      return !!debouncedFunc.current
-    }
+    wrappedFunc.isPending = () => d.isPending()
 
     wrappedFunc.flush = () => {
-      return debouncedFuncInstance.flush()
+      return d.flush()
     }
 
     return wrappedFunc
-  }, [func, delay, options])
+  }, [delay, leading, trailing, maxWait])
 
-  // Update the debounced function ref whenever func, wait, or options change
-  useEffect(() => {
-    debouncedFunc.current = debounce(func, delay, options)
-  }, [func, delay, options])
+  useUnmount(() => {
+    activeDebounced.current?.cancel()
+  })
 
   return debounced
 }

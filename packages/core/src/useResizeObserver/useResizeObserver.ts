@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { RefObject } from 'react'
 
 import { useIsMounted } from '../useIsMounted'
+import { useIsomorphicLayoutEffect } from '../useIsomorphicLayoutEffect'
 
 /** The size of the observed element. */
 export type Size = {
@@ -60,48 +61,90 @@ export function useResizeObserver<T extends HTMLElement = HTMLElement>(
   const onResize = useRef<((size: Size) => void) | undefined>(undefined)
   onResize.current = options.onResize
 
-  useEffect(() => {
-    if (!ref.current) return
+  const observedElement = ref.current
 
-    if (typeof window === 'undefined' || !('ResizeObserver' in window)) return
+  useIsomorphicLayoutEffect(() => {
+    if (typeof window === 'undefined' || !('ResizeObserver' in window)) {
+      return
+    }
 
-    const observer = new ResizeObserver(([entry]) => {
-      if (!entry) return
+    let cancelled = false
+    let observer: ResizeObserver | null = null
+    let rafId = 0
+    let pollAttempts = 0
 
-      const boxProp =
-        box === 'border-box'
-          ? 'borderBoxSize'
-          : box === 'device-pixel-content-box'
-            ? 'devicePixelContentBoxSize'
-            : 'contentBoxSize'
+    const teardown = () => {
+      observer?.disconnect()
+      observer = null
+    }
 
-      const newWidth = extractSize(entry, boxProp, 'inlineSize')
-      const newHeight = extractSize(entry, boxProp, 'blockSize')
+    const bind = (element: T) => {
+      teardown()
 
-      const hasChanged =
-        previousSize.current.width !== newWidth || previousSize.current.height !== newHeight
+      observer = new ResizeObserver(([entry]) => {
+        if (!entry) return
 
-      if (hasChanged) {
-        const newSize: Size = { width: newWidth, height: newHeight }
-        previousSize.current.width = newWidth
-        previousSize.current.height = newHeight
+        const boxProp =
+          box === 'border-box'
+            ? 'borderBoxSize'
+            : box === 'device-pixel-content-box'
+              ? 'devicePixelContentBoxSize'
+              : 'contentBoxSize'
 
-        if (onResize.current) {
-          onResize.current(newSize)
-        } else {
-          if (isMounted()) {
+        const newWidth = extractSize(entry, boxProp, 'inlineSize')
+        const newHeight = extractSize(entry, boxProp, 'blockSize')
+
+        const hasChanged =
+          previousSize.current.width !== newWidth || previousSize.current.height !== newHeight
+
+        if (hasChanged) {
+          const newSize: Size = { width: newWidth, height: newHeight }
+          previousSize.current.width = newWidth
+          previousSize.current.height = newHeight
+
+          if (onResize.current) {
+            onResize.current(newSize)
+          } else if (isMounted()) {
             setSize(newSize)
           }
         }
-      }
-    })
+      })
 
-    observer.observe(ref.current, { box })
+      observer.observe(element, { box })
+    }
+
+    const run = () => {
+      if (cancelled) {
+        return
+      }
+
+      const element = ref.current
+
+      if (!element) {
+        teardown()
+        previousSize.current = { ...initialSize }
+        if (!onResize.current) {
+          setSize(initialSize)
+        }
+
+        if (pollAttempts++ < 32) {
+          rafId = requestAnimationFrame(run)
+        }
+        return
+      }
+
+      pollAttempts = 0
+      bind(element)
+    }
+
+    run()
 
     return () => {
-      observer.disconnect()
+      cancelled = true
+      cancelAnimationFrame(rafId)
+      teardown()
     }
-  }, [box, ref, isMounted])
+  }, [box, observedElement, isMounted, ref])
 
   return { width, height }
 }
