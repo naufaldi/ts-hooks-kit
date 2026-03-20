@@ -38,6 +38,9 @@ export type OriginalStyle = {
 
 const IS_SERVER = typeof window === 'undefined'
 
+const scrollLockDepthByElement = new WeakMap<HTMLElement, number>()
+const scrollLockOriginalStyles = new WeakMap<HTMLElement, OriginalStyle>()
+
 /**
  * A custom hook that locks and unlocks scroll.
  * @param {UseScrollLockOptions} [options] - Options to configure the hook, by default it will lock the scroll automatically.
@@ -66,42 +69,65 @@ export function useScrollLock(options: UseScrollLockOptions = {}): UseScrollLock
   const { autoLock = true, lockTarget, widthReflow = true } = options
   const [isLocked, setIsLocked] = useState(false)
   const target = useRef<HTMLElement | null>(null)
-  const originalStyle = useRef<OriginalStyle | null>(null)
 
   const lock = () => {
-    if (target.current) {
-      const { overflow, paddingRight } = target.current.style
+    const el = target.current
+    if (!el || IS_SERVER) {
+      return
+    }
 
-      // Save the original styles
-      originalStyle.current = { overflow, paddingRight }
+    const depth = scrollLockDepthByElement.get(el) ?? 0
+    scrollLockDepthByElement.set(el, depth + 1)
 
-      // Prevent width reflow
+    if (depth === 0) {
+      scrollLockOriginalStyles.set(el, {
+        overflow: el.style.overflow,
+        paddingRight: el.style.paddingRight,
+      })
+
       if (widthReflow) {
-        // Use window inner width if body is the target as global scrollbar isn't part of the document
-        const offsetWidth =
-          target.current === document.body ? window.innerWidth : target.current.offsetWidth
-        // Get current computed padding right in pixels
-        const currentPaddingRight =
-          parseInt(window.getComputedStyle(target.current).paddingRight, 10) || 0
+        const offsetWidth = el === document.body ? window.innerWidth : el.offsetWidth
+        const currentPaddingRight = parseInt(window.getComputedStyle(el).paddingRight, 10) || 0
 
-        const scrollbarWidth = offsetWidth - target.current.scrollWidth
-        target.current.style.paddingRight = `${scrollbarWidth + currentPaddingRight}px`
+        const scrollbarWidth = offsetWidth - el.scrollWidth
+        el.style.paddingRight = `${scrollbarWidth + currentPaddingRight}px`
       }
 
-      // Lock the scroll
-      target.current.style.overflow = 'hidden'
-
-      setIsLocked(true)
+      el.style.overflow = 'hidden'
     }
+
+    setIsLocked(true)
   }
 
   const unlock = () => {
-    if (target.current && originalStyle.current) {
-      target.current.style.overflow = originalStyle.current.overflow
+    const el = target.current
+    if (!el || IS_SERVER) {
+      setIsLocked(false)
+      return
+    }
 
-      // Only reset padding right if we changed it
+    const depth = scrollLockDepthByElement.get(el) ?? 0
+    if (depth <= 0) {
+      setIsLocked(false)
+      return
+    }
+
+    const next = depth - 1
+    scrollLockDepthByElement.set(el, next)
+
+    if (next > 0) {
+      setIsLocked(true)
+      return
+    }
+
+    scrollLockDepthByElement.delete(el)
+    const saved = scrollLockOriginalStyles.get(el)
+    scrollLockOriginalStyles.delete(el)
+
+    if (saved) {
+      el.style.overflow = saved.overflow
       if (widthReflow) {
-        target.current.style.paddingRight = originalStyle.current.paddingRight
+        el.style.paddingRight = saved.paddingRight
       }
     }
 

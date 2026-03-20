@@ -1,10 +1,16 @@
 import { act, renderHook } from '@testing-library/react'
+import { createElement, StrictMode, type ReactNode } from 'react'
+
 
 import { useScrollLock } from './useScrollLock'
+
+const strictWrapper = ({ children }: { children: ReactNode }) =>
+  createElement(StrictMode, null, children)
 
 describe('useScrollLock()', () => {
   beforeEach(() => {
     document.body.style.removeProperty('overflow')
+    document.body.style.removeProperty('padding-right')
   })
 
   it('should initially lock and unlock body', () => {
@@ -33,9 +39,7 @@ describe('useScrollLock()', () => {
     target.id = 'target'
     document.body.appendChild(target)
 
-    const { unmount } = renderHook(() =>
-      useScrollLock({ lockTarget: '#target' }),
-    )
+    const { unmount } = renderHook(() => useScrollLock({ lockTarget: '#target' }))
 
     expect(target.style.overflow).toBe('hidden')
     unmount()
@@ -80,9 +84,7 @@ describe('useScrollLock()', () => {
   })
 
   it('should unlock on unmount even with initial is locked', () => {
-    const { unmount, result } = renderHook(() =>
-      useScrollLock({ autoLock: false }),
-    )
+    const { unmount, result } = renderHook(() => useScrollLock({ autoLock: false }))
 
     expect(document.body.style.overflow).toBe('')
     act(() => {
@@ -94,9 +96,7 @@ describe('useScrollLock()', () => {
   })
 
   it('should fallback to document.body if the target element is not found', () => {
-    const { unmount } = renderHook(() =>
-      useScrollLock({ lockTarget: '#non-existing' }),
-    )
+    const { unmount } = renderHook(() => useScrollLock({ lockTarget: '#non-existing' }))
 
     expect(document.body.style.overflow).toBe('hidden')
     unmount()
@@ -111,5 +111,29 @@ describe('useScrollLock()', () => {
     expect(document.body.style.paddingRight).toBe(`${scrollbarWidth}px`)
     unmount()
     expect(document.body.style.paddingRight).toBe('')
+  })
+
+  it('should restore body overflow after unmount in StrictMode', () => {
+    const { unmount } = renderHook(() => useScrollLock(), {
+      wrapper: strictWrapper,
+    })
+
+    expect(document.body.style.overflow).toBe('hidden')
+    unmount()
+    expect(document.body.style.overflow).toBe('')
+  })
+
+  it('should restore body overflow with manual lock in StrictMode', () => {
+    const { unmount, result } = renderHook(() => useScrollLock({ autoLock: false }), {
+      wrapper: strictWrapper,
+    })
+
+    expect(document.body.style.overflow).toBe('')
+    act(() => {
+      result.current.lock()
+    })
+    expect(document.body.style.overflow).toBe('hidden')
+    unmount()
+    expect(document.body.style.overflow).toBe('')
   })
 })

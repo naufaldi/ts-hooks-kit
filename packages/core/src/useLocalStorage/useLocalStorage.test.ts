@@ -21,6 +21,13 @@ describe('useLocalStorage()', () => {
     expect(result.current[0]).toBe('value')
   })
 
+  it('setValue reference is stable across re-renders', () => {
+    const { result, rerender } = renderHook(() => useLocalStorage('stable-set', 0))
+    const setA = result.current[1]
+    rerender()
+    expect(result.current[1]).toBe(setA)
+  })
+
   it('Initial state is a callback function', () => {
     const { result } = renderHook(() => useLocalStorage('key', () => 'value'))
 

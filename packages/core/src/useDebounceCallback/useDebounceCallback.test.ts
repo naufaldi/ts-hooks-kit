@@ -8,9 +8,7 @@ describe('useDebounceCallback()', () => {
   it('should debounce the callback', () => {
     const delay = 500
     const debouncedCallback = vitest.fn()
-    const { result } = renderHook(() =>
-      useDebounceCallback(debouncedCallback, delay),
-    )
+    const { result } = renderHook(() => useDebounceCallback(debouncedCallback, delay))
 
     act(() => {
       result.current('argument')
@@ -69,9 +67,7 @@ describe('useDebounceCallback()', () => {
   it('should cancel the debounced callback', () => {
     const delay = 500
     const debouncedCallback = vitest.fn()
-    const { result } = renderHook(() =>
-      useDebounceCallback(debouncedCallback, delay),
-    )
+    const { result } = renderHook(() => useDebounceCallback(debouncedCallback, delay))
 
     act(() => {
       result.current('argument')
@@ -88,9 +84,7 @@ describe('useDebounceCallback()', () => {
   it('should flush the debounced callback', () => {
     const delay = 500
     const debouncedCallback = vitest.fn()
-    const { result } = renderHook(() =>
-      useDebounceCallback(debouncedCallback, delay),
-    )
+    const { result } = renderHook(() => useDebounceCallback(debouncedCallback, delay))
 
     act(() => {
       result.current('argument')
@@ -106,5 +100,36 @@ describe('useDebounceCallback()', () => {
 
     // The callback should be invoked immediately after flushing
     expect(debouncedCallback).toHaveBeenCalled()
+  })
+
+  it('should debounce when options object is a new literal each render', () => {
+    const debouncedCallback = vitest.fn()
+    const { result, rerender } = renderHook(() =>
+      useDebounceCallback(debouncedCallback, 100, { leading: false, trailing: true }),
+    )
+
+    act(() => {
+      result.current('a')
+    })
+    rerender()
+    act(() => {
+      result.current('b')
+    })
+
+    expect(debouncedCallback).not.toHaveBeenCalled()
+    vitest.advanceTimersByTime(100)
+    expect(debouncedCallback).toHaveBeenCalledTimes(1)
+    expect(debouncedCallback).toHaveBeenCalledWith('b')
+  })
+
+  it('should report isPending false after cancel', () => {
+    const { result } = renderHook(() => useDebounceCallback(vitest.fn(), 100))
+
+    act(() => {
+      result.current('x')
+      expect(result.current.isPending()).toBe(true)
+      result.current.cancel()
+      expect(result.current.isPending()).toBe(false)
+    })
   })
 })

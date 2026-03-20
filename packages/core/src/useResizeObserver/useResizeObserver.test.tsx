@@ -1,4 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
+import type { RefObject } from 'react'
+
 
 import { useResizeObserver } from './useResizeObserver'
 
@@ -42,9 +44,7 @@ describe('useResizeObserver()', () => {
 
   it('should return initial undefined sizes', () => {
     const ref = { current: document.createElement('div') }
-    const { result } = renderHook(() =>
-      useResizeObserver({ ref }),
-    )
+    const { result } = renderHook(() => useResizeObserver({ ref }))
 
     expect(result.current.width).toBeUndefined()
     expect(result.current.height).toBeUndefined()
@@ -52,9 +52,7 @@ describe('useResizeObserver()', () => {
 
   it('should return the observed element sizes', () => {
     const ref = { current: document.createElement('div') }
-    const { result } = renderHook(() =>
-      useResizeObserver({ ref }),
-    )
+    const { result } = renderHook(() => useResizeObserver({ ref }))
 
     triggerResize(100, 100)
 
@@ -64,9 +62,7 @@ describe('useResizeObserver()', () => {
 
   it('should update size when element is resized', () => {
     const ref = { current: document.createElement('div') }
-    const { result } = renderHook(() =>
-      useResizeObserver({ ref }),
-    )
+    const { result } = renderHook(() => useResizeObserver({ ref }))
 
     triggerResize(100, 100)
     expect(result.current.width).toBe(100)
@@ -79,12 +75,25 @@ describe('useResizeObserver()', () => {
   it('should use onResize callback', () => {
     const ref = { current: document.createElement('div') }
     const onResize = vi.fn()
-    renderHook(() =>
-      useResizeObserver({ ref, onResize }),
-    )
+    renderHook(() => useResizeObserver({ ref, onResize }))
 
     triggerResize(200, 200)
 
     expect(onResize).toHaveBeenCalledWith({ width: 200, height: 200 })
+  })
+
+  it('should observe after ref.current is set on a later render', () => {
+    const ref: RefObject<HTMLDivElement | null> = { current: null }
+    const { result, rerender } = renderHook(() => useResizeObserver({ ref }))
+
+    expect(result.current.width).toBeUndefined()
+
+    ref.current = document.createElement('div')
+    rerender()
+
+    triggerResize(42, 42)
+
+    expect(result.current.width).toBe(42)
+    expect(result.current.height).toBe(42)
   })
 })
