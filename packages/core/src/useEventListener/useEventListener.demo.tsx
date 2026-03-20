@@ -3,37 +3,35 @@ import { useRef } from 'react'
 import { useEventListener } from './useEventListener'
 
 export default function Component() {
-  // Define button ref
   const buttonRef = useRef<HTMLButtonElement>(null)
   const documentRef = useRef<Document>(document)
 
-  const onScroll = (event: Event) => {
-    console.log('window scrolled!', event)
+  const onScroll = (event: WindowEventMap['scroll']) => {
+    console.log('window scrolled!', event.type)
   }
 
-  const onClick = (event: Event) => {
-    console.log('button clicked!', event)
+  const onClick = (event: HTMLElementEventMap['click']) => {
+    console.log('button clicked!', event.currentTarget)
   }
 
-  const onVisibilityChange = (event: Event) => {
+  const onVisibilityChange = (event: DocumentEventMap['visibilitychange']) => {
     console.log('doc visibility changed!', {
       isVisible: !document.hidden,
       event,
     })
   }
 
-  // example with window based event
   useEventListener('scroll', onScroll)
 
-  // example with document based event
   useEventListener('visibilitychange', onVisibilityChange, documentRef)
 
-  // example with element based event
   useEventListener('click', onClick, buttonRef)
 
   return (
     <div style={{ minHeight: '200vh' }}>
-      <button ref={buttonRef}>Click me</button>
+      <button ref={buttonRef} type="button">
+        Click me
+      </button>
     </div>
   )
 }

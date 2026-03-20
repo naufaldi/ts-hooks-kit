@@ -1,8 +1,14 @@
+import { readLocalStorageValue } from './readLocalStorageValue'
 import { useReadLocalStorage } from './useReadLocalStorage'
 
 export default function Component() {
-  // Assuming a value was set in localStorage with this key
-  const darkMode = useReadLocalStorage('darkMode')
+  const darkMode = useReadLocalStorage<boolean>('darkMode')
+  const snapshot = readLocalStorageValue<boolean>('darkMode')
 
-  return <p>DarkMode is {darkMode ? 'enabled' : 'disabled'}</p>
+  return (
+    <div>
+      <p>Hook: darkMode is {String(darkMode)}</p>
+      <p>readLocalStorageValue (same key): {String(snapshot)}</p>
+    </div>
+  )
 }

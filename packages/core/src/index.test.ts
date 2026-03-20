@@ -7,6 +7,8 @@ describe('core index exports', () => {
       [
         "DOTS",
         "createGlobalState",
+        "deserializeReadLocalStorageString",
+        "readLocalStorageValue",
         "useAsync",
         "useBoolean",
         "useClickAnyWhere",

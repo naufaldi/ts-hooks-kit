@@ -3,13 +3,7 @@ import type { RefObject } from 'react'
 import { useEventListener } from '../useEventListener'
 
 /** Supported event types. */
-export type EventType =
-  | 'mousedown'
-  | 'mouseup'
-  | 'touchstart'
-  | 'touchend'
-  | 'focusin'
-  | 'focusout'
+export type EventType = 'mousedown' | 'mouseup' | 'touchstart' | 'touchend' | 'focusin' | 'focusout'
 
 /**
  * Custom hook that handles clicks outside a specified element.
@@ -23,9 +17,17 @@ export type EventType =
  * @see [Documentation](https://usehooks-ts.com/react-hook/use-on-click-outside)
  * @example
  * ```tsx
- * const containerRef = useRef(null);
- * useOnClickOutside([containerRef], () => {
- *   // Handle clicks outside the container.
+ * const ref = useRef<HTMLDivElement>(null);
+ * useOnClickOutside(ref, () => {
+ *   // Outside the mounted element (ref.current must be non-null to define “inside”).
+ * });
+ * ```
+ * @example
+ * ```tsx
+ * const a = useRef<HTMLDivElement>(null);
+ * const b = useRef<HTMLDivElement>(null);
+ * useOnClickOutside([a, b], () => {
+ *   // Outside both regions; ignored while every ref’s current is null.
  * });
  * ```
  */
@@ -45,11 +47,13 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
         return
       }
 
-      const isOutside = Array.isArray(ref)
-        ? ref
-            .filter(r => Boolean(r.current))
-            .every(r => r.current && !r.current.contains(target))
-        : ref.current && !ref.current.contains(target)
+      let isOutside: boolean
+      if (Array.isArray(ref)) {
+        const mounted = ref.filter((r): r is RefObject<T> & { current: T } => r.current != null)
+        isOutside = mounted.length > 0 && mounted.every(r => !r.current.contains(target))
+      } else {
+        isOutside = Boolean(ref.current && !ref.current.contains(target))
+      }
 
       if (isOutside) {
         handler(event)
