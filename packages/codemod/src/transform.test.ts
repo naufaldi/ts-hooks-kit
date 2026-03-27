@@ -103,8 +103,29 @@ describe('transformSource', () => {
     expect(result.code).not.toContain("from 'usehooks-ts'")
   })
 
-  it('does not rewrite dynamic imports (known limitation)', () => {
+  it('rewrites dynamic imports', () => {
     const input = "const hooks = await import('usehooks-ts')\n"
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(true)
+    expect(result.rewrites).toBe(1)
+    expect(result.code).toContain("import('@ts-hooks-kit/core')")
+    expect(result.code).not.toContain("import('usehooks-ts')")
+  })
+
+  it('rewrites dynamic import without await', () => {
+    const input = "const hooks = import('usehooks-ts')\n"
+
+    const result = transformSource(input)
+
+    expect(result.changed).toBe(true)
+    expect(result.rewrites).toBe(1)
+    expect(result.code).toContain("import('@ts-hooks-kit/core')")
+  })
+
+  it('does not rewrite dynamic imports of other packages', () => {
+    const input = "const hooks = await import('lodash')\n"
 
     const result = transformSource(input)
 

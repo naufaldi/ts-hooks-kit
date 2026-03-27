@@ -70,6 +70,27 @@ export const transformSource = (source: string): TransformResult => {
       }
     })
 
+  root
+    .find(j.CallExpression)
+    .filter((path: any) => {
+      if (path.node.callee.type !== 'Import') {
+        return false
+      }
+
+      const [firstArg] = path.node.arguments
+
+      return getStringValue(firstArg) === SOURCE_PACKAGE
+    })
+    .forEach((path: any) => {
+      const [firstArg] = path.node.arguments
+      if (firstArg !== undefined && typeof firstArg === 'object' && 'type' in firstArg) {
+        if (firstArg.type === 'Literal' || firstArg.type === 'StringLiteral') {
+          firstArg.value = TARGET_PACKAGE
+          rewrites += 1
+        }
+      }
+    })
+
   if (rewrites === 0) {
     return {
       code: source,

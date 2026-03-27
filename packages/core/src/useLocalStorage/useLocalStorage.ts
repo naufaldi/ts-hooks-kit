@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from 'react'
 
 import { useEventCallback } from '../useEventCallback'
 import { useEventListener } from '../useEventListener'
+import { sanitizeJson } from '../utils/sanitizeJson'
 
 declare global {
   interface WindowEventMap {
@@ -75,7 +76,7 @@ export function useLocalStorage<T>(
 
       let parsed: unknown
       try {
-        parsed = JSON.parse(value)
+        parsed = sanitizeJson(JSON.parse(value))
       } catch (error) {
         console.error('Error parsing JSON:', error)
         return defaultValue // Return initialValue if parsing fails
