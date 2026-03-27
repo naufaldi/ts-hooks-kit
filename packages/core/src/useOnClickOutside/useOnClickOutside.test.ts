@@ -105,4 +105,28 @@ describe('useOnClickOutside()', () => {
 
     expect(handler).not.toHaveBeenCalled()
   })
+
+  it('uses capture phase by default (events fire before stopPropagation)', () => {
+    const el = document.createElement('div')
+    document.body.appendChild(el)
+    const handler = vi.fn()
+
+    renderHook(() => {
+      const ref = useRef(el)
+      useOnClickOutside(ref, handler)
+    })
+
+    // Create an outside element that stops propagation
+    const outside = document.createElement('div')
+    document.body.appendChild(outside)
+    outside.addEventListener('mousedown', e => e.stopPropagation())
+
+    // Dispatch on the outside element — capture phase should still catch it
+    outside.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    el.remove()
+    outside.remove()
+  })
 })
