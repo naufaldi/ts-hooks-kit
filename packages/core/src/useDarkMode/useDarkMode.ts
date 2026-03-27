@@ -1,6 +1,7 @@
 import { useIsomorphicLayoutEffect } from '../useIsomorphicLayoutEffect'
 import { useLocalStorage } from '../useLocalStorage'
 import { useMediaQuery } from '../useMediaQuery'
+import { usePrevious } from '../usePrevious'
 
 const COLOR_SCHEME_QUERY = '(prefers-color-scheme: dark)'
 const LOCAL_STORAGE_KEY = 'usehooks-ts-dark-mode'
@@ -51,11 +52,7 @@ export type DarkModeReturn = {
  * ```
  */
 export function useDarkMode(options: DarkModeOptions = {}): DarkModeReturn {
-  const {
-    defaultValue,
-    localStorageKey = LOCAL_STORAGE_KEY,
-    initializeWithValue = true,
-  } = options
+  const { defaultValue, localStorageKey = LOCAL_STORAGE_KEY, initializeWithValue = true } = options
 
   const isDarkOS = useMediaQuery(COLOR_SCHEME_QUERY, {
     initializeWithValue,
@@ -67,12 +64,14 @@ export function useDarkMode(options: DarkModeOptions = {}): DarkModeReturn {
     { initializeWithValue },
   )
 
-  // Update darkMode if os prefers changes
+  const prevIsDarkOS = usePrevious(isDarkOS)
+
+  // Only sync when OS preference actually changes, not on initial mount
   useIsomorphicLayoutEffect(() => {
-    if (isDarkOS !== isDarkMode) {
+    if (prevIsDarkOS !== undefined && isDarkOS !== prevIsDarkOS) {
       setDarkMode(isDarkOS)
     }
-  }, [isDarkOS])
+  }, [isDarkOS, prevIsDarkOS, setDarkMode])
 
   return {
     isDarkMode,

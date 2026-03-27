@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import type { DebouncedState } from '../useDebounceCallback'
 import { useDebounceCallback } from '../useDebounceCallback'
@@ -30,31 +30,52 @@ export type UseDebounceValueOptions<T> = {
  * Custom hook that returns a debounced version of the provided value, along with a function to update it.
  * @template T - The type of the value.
  * @param {T | (() => T)} initialValue - The value to be debounced.
- * @param {number} delay - The delay in milliseconds before the value is updated (default is 500ms).
+ * @param {number} [delay=500] - The delay in milliseconds before the value is updated.
  * @param {object} [options] - Optional configurations for the debouncing behavior.
- * @returns {[T, DebouncedState<(value: T) => void>]} An array containing the debounced value and the function to update it.
+ * @returns {[T, DebouncedState<(value: T) => void>, boolean]} An array containing the debounced value, the function to update it, and whether an update is pending.
  * @public
  * @see [Documentation](https://usehooks-ts.com/react-hook/use-debounce-value)
  * @example
  * ```tsx
- * const [debouncedValue, updateDebouncedValue] = useDebounceValue(inputValue, 500, { leading: true });
+ * const [debouncedValue, updateDebouncedValue, isPending] = useDebounceValue(inputValue, 500);
  * ```
  */
 export function useDebounceValue<T>(
   initialValue: T | (() => T),
-  delay: number,
+  delay = 500,
   options?: UseDebounceValueOptions<T>,
-): [T, DebouncedState<(value: T) => void>] {
+): [T, DebouncedState<(value: T) => void>, boolean] {
   const eq = options?.equalityFn ?? ((left: T, right: T) => left === right)
-  const unwrappedInitialValue =
-    initialValue instanceof Function ? initialValue() : initialValue
+  const unwrappedInitialValue = initialValue instanceof Function ? initialValue() : initialValue
   const [debouncedValue, setDebouncedValue] = useState<T>(unwrappedInitialValue)
   const previousValueRef = useRef<T | undefined>(unwrappedInitialValue)
+  const [isPending, setIsPending] = useState(false)
 
-  const updateDebouncedValue = useDebounceCallback(
-    setDebouncedValue,
+  const internalDebounce = useDebounceCallback(
+    (value: T) => {
+      setDebouncedValue(value)
+      setIsPending(false)
+    },
     delay,
     options,
+  )
+
+  const updateDebouncedValue = useCallback(
+    Object.assign(
+      (value: T) => {
+        setIsPending(true)
+        return internalDebounce(value)
+      },
+      {
+        cancel: () => {
+          internalDebounce.cancel()
+          setIsPending(false)
+        },
+        flush: () => internalDebounce.flush(),
+        isPending: () => internalDebounce.isPending(),
+      },
+    ) as DebouncedState<(value: T) => void>,
+    [internalDebounce],
   )
 
   // Update the debounced value if the initial value changes
@@ -63,5 +84,5 @@ export function useDebounceValue<T>(
     previousValueRef.current = unwrappedInitialValue
   }
 
-  return [debouncedValue, updateDebouncedValue]
+  return [debouncedValue, updateDebouncedValue, isPending]
 }

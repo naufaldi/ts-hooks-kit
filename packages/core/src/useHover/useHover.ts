@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { RefObject } from 'react'
 
 import { useEventListener } from '../useEventListener'
+import { useIsomorphicLayoutEffect } from '../useIsomorphicLayoutEffect'
 
 /**
  * Custom hook that tracks whether a DOM element is being hovered over.
@@ -31,6 +32,13 @@ export function useHover<T extends HTMLElement = HTMLElement>(
 
   useEventListener('mouseenter', handleMouseEnter, elementRef)
   useEventListener('mouseleave', handleMouseLeave, elementRef)
+
+  // Reset hover state when the element is removed from the DOM
+  useIsomorphicLayoutEffect(() => {
+    if (!elementRef.current) {
+      setValue(false)
+    }
+  })
 
   return value
 }

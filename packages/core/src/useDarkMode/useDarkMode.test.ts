@@ -123,4 +123,25 @@ describe('useDarkMode()', () => {
 
     expect(result.current.isDarkMode).toBe(false)
   })
+
+  it('should preserve user preference across remount when OS differs', () => {
+    mockMatchMedia(true) // OS prefers dark
+    const { result, unmount } = renderHook(() => useDarkMode())
+    expect(result.current.isDarkMode).toBe(true)
+
+    // User explicitly disables dark mode
+    act(() => {
+      result.current.disable()
+    })
+    expect(result.current.isDarkMode).toBe(false)
+    expect(window.localStorage.getItem('usehooks-ts-dark-mode')).toBe('false')
+
+    // Simulate HMR: unmount and remount
+    unmount()
+    mockMatchMedia(true) // OS still prefers dark
+    const { result: result2 } = renderHook(() => useDarkMode())
+
+    // Should preserve the user's choice (false), NOT reset to OS (true)
+    expect(result2.current.isDarkMode).toBe(false)
+  })
 })

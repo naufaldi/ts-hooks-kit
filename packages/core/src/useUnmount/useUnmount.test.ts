@@ -18,4 +18,25 @@ describe('useUnmount()', () => {
 
     expect(cleanupMock).toHaveBeenCalled()
   })
+
+  it('should use the latest callback when unmounted after rerender', () => {
+    const first = vitest.fn()
+    const second = vitest.fn()
+
+    const { unmount, rerender } = renderHook(
+      ({ fn }) => {
+        useUnmount(fn)
+      },
+      { initialProps: { fn: first } },
+    )
+
+    rerender({ fn: second })
+
+    act(() => {
+      unmount()
+    })
+
+    expect(first).not.toHaveBeenCalled()
+    expect(second).toHaveBeenCalledOnce()
+  })
 })

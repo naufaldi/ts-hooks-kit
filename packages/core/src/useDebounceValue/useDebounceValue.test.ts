@@ -33,11 +33,29 @@ describe('useDebounceValue()', () => {
     expect(result.current[0]).toBe('update3')
   })
 
+  it('should default delay to 500ms when omitted', () => {
+    const { result } = renderHook(() => useDebounceValue('initial'))
+
+    act(() => {
+      result.current[1]('updated')
+    })
+
+    // Should not update before 500ms
+    act(() => {
+      vitest.advanceTimersByTime(400)
+    })
+    expect(result.current[0]).toBe('initial')
+
+    // Should update after 500ms
+    act(() => {
+      vitest.advanceTimersByTime(200)
+    })
+    expect(result.current[0]).toBe('updated')
+  })
+
   it('should handle options', () => {
     const delay = 500
-    const { result } = renderHook(() =>
-      useDebounceValue('initial', delay, { leading: true }),
-    )
+    const { result } = renderHook(() => useDebounceValue('initial', delay, { leading: true }))
 
     expect(result.current[0]).toBe('initial')
 
@@ -53,5 +71,24 @@ describe('useDebounceValue()', () => {
 
     // The debounced value should not be updated again after the interval
     expect(result.current[0]).toBe('updated')
+  })
+
+  it('should expose reactive isPending in the third tuple element', () => {
+    const { result } = renderHook(() => useDebounceValue('initial', 100))
+
+    // Initially not pending
+    expect(result.current[2]).toBe(false)
+
+    // After updating, should be pending
+    act(() => {
+      result.current[1]('updated')
+    })
+    expect(result.current[2]).toBe(true)
+
+    // After debounce settles, should not be pending
+    act(() => {
+      vitest.advanceTimersByTime(200)
+    })
+    expect(result.current[2]).toBe(false)
   })
 })
