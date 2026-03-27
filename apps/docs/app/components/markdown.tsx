@@ -109,11 +109,18 @@ export function Markdown({ source }: { source: string }) {
               {children}
             </th>
           ),
-          td: ({ children, ...props }) => (
-            <td className="border border-border px-3 py-2" {...props}>
-              {children}
-            </td>
-          ),
+          td: ({ children, node, ...props }) => {
+            const isFirstCell = node?.position?.start.column === 1
+            return (
+              <td
+                className="border border-border px-3 py-2"
+                {...(isFirstCell ? { scope: 'row' as any } : {})}
+                {...props}
+              >
+                {children}
+              </td>
+            )
+          },
           pre: ({ children, ...props }) => (
             <pre
               className="overflow-auto rounded-lg border border-border p-4 text-sm leading-relaxed"
