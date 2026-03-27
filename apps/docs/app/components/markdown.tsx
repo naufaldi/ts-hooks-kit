@@ -12,6 +12,8 @@ import langJson from 'shiki/langs/json.mjs'
 import githubLight from 'shiki/themes/github-light.mjs'
 import githubDark from 'shiki/themes/github-dark.mjs'
 
+import { Link } from 'react-router'
+
 import { slugifyHeading } from '../lib/markdown-helpers'
 
 const highlighter = createHighlighterCoreSync({
@@ -80,12 +82,15 @@ export function Markdown({ source }: { source: string }) {
           ),
           a: ({ href, children, ...props }) => {
             const isInternal = href?.startsWith('/')
+            if (isInternal && href) {
+              return <Link to={href} {...props}>{children}</Link>
+            }
             return (
               <a
                 href={href}
                 {...props}
-                target={isInternal ? undefined : '_blank'}
-                rel={isInternal ? undefined : 'noreferrer noopener'}
+                target="_blank"
+                rel="noreferrer noopener"
               >
                 {children}
               </a>
