@@ -3,6 +3,8 @@
  * @template T - The type of the stored value.
  * @public
  */
+import { sanitizeJson } from '../utils/sanitizeJson'
+
 export type ReadLocalStorageValueOptions<T> = {
   /** Custom deserializer to convert the stored string to `T`. */
   deserializer?: (value: string) => T
@@ -28,7 +30,7 @@ export function deserializeReadLocalStorageString<T>(
   }
 
   try {
-    return JSON.parse(value) as T
+    return sanitizeJson(JSON.parse(value)) as T
   } catch (error) {
     console.error('Error parsing JSON:', error)
     return null
