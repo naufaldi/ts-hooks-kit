@@ -52,20 +52,26 @@ function useEventListener<K extends keyof DocumentEventMap>(
  * @see [Documentation](https://usehooks-ts.com/react-hook/use-event-listener)
  * @example
  * ```tsx
- * // Example 1: Attach a window event listener
+ * const handleResize = (event: WindowEventMap['resize']) => {
+ *   console.log(window.innerWidth);
+ * };
  * useEventListener('resize', handleResize);
  * ```
  * @example
  * ```tsx
- * // Example 2: Attach a document event listener with options
- * const elementRef = useRef(document);
- * useEventListener('click', handleClick, elementRef, { capture: true });
+ * const documentRef = useRef<Document>(document);
+ * const handleVisibility = (event: DocumentEventMap['visibilitychange']) => {
+ *   console.log(document.hidden, event);
+ * };
+ * useEventListener('visibilitychange', handleVisibility, documentRef, { capture: true });
  * ```
  * @example
  * ```tsx
- * // Example 3: Attach an element event listener
  * const buttonRef = useRef<HTMLButtonElement>(null);
- * useEventListener('click', handleButtonClick, buttonRef);
+ * const handleClick = (event: HTMLElementEventMap['click']) => {
+ *   console.log(event.currentTarget);
+ * };
+ * useEventListener('click', handleClick, buttonRef);
  * ```
  */
 function useEventListener<

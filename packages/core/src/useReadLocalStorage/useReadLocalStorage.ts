@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useEventListener } from '../useEventListener'
 
+import { readLocalStorageValue } from './readLocalStorageValue'
+
 const IS_SERVER = typeof window === 'undefined'
 
 /**
@@ -21,10 +23,7 @@ export function useReadLocalStorage<T>(
   options: Options<T, false>,
 ): T | null | undefined
 // CSR version
-export function useReadLocalStorage<T>(
-  key: string,
-  options?: Partial<Options<T, true>>,
-): T | null
+export function useReadLocalStorage<T>(key: string, options?: Partial<Options<T, true>>): T | null
 /**
  * Custom hook that reads a value from [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), closely related to [`useLocalStorage()`](https://usehooks-ts.com/react-hook/use-local-storage).
  * @template T - The type of the stored value.
@@ -38,6 +37,11 @@ export function useReadLocalStorage<T>(
  * const storedData = useReadLocalStorage('myKey');
  * // Access the stored data from local storage.
  * ```
+ * @example
+ * ```ts
+ * import { readLocalStorageValue } from '@ts-hooks-kit/core';
+ * const value = readLocalStorageValue<MyType>('myKey');
+ * ```
  */
 export function useReadLocalStorage<T>(
   key: string,
@@ -48,45 +52,10 @@ export function useReadLocalStorage<T>(
     initializeWithValue = false
   }
 
-  const deserializer = useCallback<(value: string) => T | null>(
-    value => {
-      if (options.deserializer) {
-        return options.deserializer(value)
-      }
-      // Support 'undefined' as a value
-      if (value === 'undefined') {
-        return undefined as unknown as T
-      }
-
-      let parsed: unknown
-      try {
-        parsed = JSON.parse(value)
-      } catch (error) {
-        console.error('Error parsing JSON:', error)
-        return null
-      }
-
-      return parsed as T
-    },
-    [options],
+  const readValue = useCallback(
+    (): T | null | undefined => readLocalStorageValue<T>(key, options),
+    [key, options],
   )
-
-  // Get from local storage then
-  // parse stored json or return initialValue
-  const readValue = useCallback((): T | null => {
-    // Prevent build error "window is undefined" but keep keep working
-    if (IS_SERVER) {
-      return null
-    }
-
-    try {
-      const raw = window.localStorage.getItem(key)
-      return raw ? deserializer(raw) : null
-    } catch (error) {
-      console.warn(`Error reading localStorage key “${key}”:`, error)
-      return null
-    }
-  }, [key, deserializer])
 
   const [storedValue, setStoredValue] = useState(() => {
     if (initializeWithValue) {
