@@ -65,6 +65,21 @@ describe('useWindowSize()', () => {
     expect(result.current.width).toBe(2196)
   })
 
+  it('should update on orientationchange event', () => {
+    const { result } = renderHook(() => useWindowSize())
+
+    expect(result.current.width).toBe(1920)
+
+    act(() => {
+      window.innerWidth = 1080
+      window.innerHeight = 1920
+      window.dispatchEvent(new Event('orientationchange'))
+    })
+
+    expect(result.current.width).toBe(1080)
+    expect(result.current.height).toBe(1920)
+  })
+
   it('should debounce the callback', () => {
     const { result } = renderHook(() => useWindowSize({ debounceDelay: 100 }))
 
