@@ -33,11 +33,29 @@ describe('useDebounceValue()', () => {
     expect(result.current[0]).toBe('update3')
   })
 
+  it('should default delay to 500ms when omitted', () => {
+    const { result } = renderHook(() => useDebounceValue('initial'))
+
+    act(() => {
+      result.current[1]('updated')
+    })
+
+    // Should not update before 500ms
+    act(() => {
+      vitest.advanceTimersByTime(400)
+    })
+    expect(result.current[0]).toBe('initial')
+
+    // Should update after 500ms
+    act(() => {
+      vitest.advanceTimersByTime(200)
+    })
+    expect(result.current[0]).toBe('updated')
+  })
+
   it('should handle options', () => {
     const delay = 500
-    const { result } = renderHook(() =>
-      useDebounceValue('initial', delay, { leading: true }),
-    )
+    const { result } = renderHook(() => useDebounceValue('initial', delay, { leading: true }))
 
     expect(result.current[0]).toBe('initial')
 
