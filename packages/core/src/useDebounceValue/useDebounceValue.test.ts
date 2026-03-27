@@ -72,4 +72,23 @@ describe('useDebounceValue()', () => {
     // The debounced value should not be updated again after the interval
     expect(result.current[0]).toBe('updated')
   })
+
+  it('should expose reactive isPending in the third tuple element', () => {
+    const { result } = renderHook(() => useDebounceValue('initial', 100))
+
+    // Initially not pending
+    expect(result.current[2]).toBe(false)
+
+    // After updating, should be pending
+    act(() => {
+      result.current[1]('updated')
+    })
+    expect(result.current[2]).toBe(true)
+
+    // After debounce settles, should not be pending
+    act(() => {
+      vitest.advanceTimersByTime(200)
+    })
+    expect(result.current[2]).toBe(false)
+  })
 })
