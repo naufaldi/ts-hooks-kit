@@ -27,12 +27,8 @@ const cachedScriptStatuses = new Map<string, UseScriptStatus | undefined>()
  * ```
  */
 function getScriptNode(src: string) {
-  const node: HTMLScriptElement | null = document.querySelector(
-    `script[src="${src}"]`,
-  )
-  const status = node?.getAttribute('data-status') as
-    | UseScriptStatus
-    | undefined
+  const node: HTMLScriptElement | null = document.querySelector(`script[src="${CSS.escape(src)}"]`)
+  const status = node?.getAttribute('data-status') as UseScriptStatus | undefined
 
   return {
     node,
@@ -50,10 +46,7 @@ function getScriptNode(src: string) {
  * const scriptStatus = useScript('https://example.com/script.js', { removeOnUnmount: true });
  * // Access the status of the script loading (e.g., 'loading', 'ready', 'error').
  */
-export function useScript(
-  src: string | null,
-  options?: UseScriptOptions,
-): UseScriptStatus {
+export function useScript(src: string | null, options?: UseScriptOptions): UseScriptStatus {
   const [status, setStatus] = useState<UseScriptStatus>(() => {
     if (!src || options?.shouldPreventLoad) {
       return 'idle'
@@ -98,8 +91,7 @@ export function useScript(
       // Store status in attribute on script
       // This can be read by other instances of this hook
       const setAttributeFromEvent = (event: Event) => {
-        const scriptStatus: UseScriptStatus =
-          event.type === 'load' ? 'ready' : 'error'
+        const scriptStatus: UseScriptStatus = event.type === 'load' ? 'ready' : 'error'
 
         scriptNode?.setAttribute('data-status', scriptStatus)
       }
