@@ -14,7 +14,7 @@ export default function MigrationRoute() {
     <section className="max-w-[840px]">
       <PageHeader
         title="Migration from usehooks-ts"
-        description="Move safely to @ts-hooks-kit/core with import rewrites and compatibility checks."
+        description="Step-by-step guide to migrate from usehooks-ts to @ts-hooks-kit/core, with automated codemod, before/after examples, and known differences."
       />
       <Markdown source={data.markdown} />
     </section>
